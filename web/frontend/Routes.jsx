@@ -1,4 +1,6 @@
 import { Routes as ReactRouterRoutes, Route } from "react-router-dom";
+import StudentDetails from "./pages/StudentDetails";
+import CourseDetails from "./pages/CourseDetails";
 
 /**
  * File-based routing.
@@ -26,6 +28,8 @@ export default function Routes({ pages }) {
     <ReactRouterRoutes>
       {routeComponents}
       <Route path="*" element={<NotFound />} />
+      <Route path="/students/:id" element={<StudentDetails />} />
+      <Route path="/courses/:handle" element={<CourseDetails />} />
     </ReactRouterRoutes>
   );
 }
