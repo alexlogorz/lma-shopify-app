@@ -6,10 +6,14 @@ import {
   getRegisteredCourses,
   getCompletedLessons
 } from '../utils.js';
+import sqlite3 from 'sqlite3';
+
+const DB_PATH = `${process.cwd()}/database.sqlite`;
 
 const router = express.Router();
+const db = new sqlite3.Database(DB_PATH);
 
-// All routes here are for the endpoint: /api/students
+app.use(bodyParser.urlencoded({ extended: true })); 
 
 router.get('/', async (req, res) => {
   try {
@@ -73,6 +77,76 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ error: "Failed to fetch student" });
   }
 });
+
+router.post('/submit-onboarding', (req, res) => {
+  const {
+    customerId,
+    firstName,
+    lastName,
+    email,
+    phone,
+    studentLoc,
+    prefStartDate,
+    prefInstructor,
+    lessonPackage,
+    goals,
+    expLevel,
+    musicPreferences,
+    hoursAvail,
+    equipmentAccess,
+    otherNotes, // if you later name the textarea for specific notes
+  } = req.body;
+
+  const query = `
+    INSERT INTO onboarding_submissions (
+      customer_id,
+      first_name,
+      last_name,
+      email,
+      phone,
+      location,
+      preferred_start_date,
+      preferred_instructor,
+      lesson_package,
+      goals,
+      experience_level,
+      music_preferences,
+      hours_available,
+      equipment_access,
+      other_notes
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const params = [
+    customerId,
+    firstName,
+    lastName,
+    email,
+    phone,
+    studentLoc,
+    prefStartDate,
+    prefInstructor,
+    lessonPackage,
+    goals,
+    expLevel,
+    Array.isArray(musicPreferences)
+      ? musicPreferences.join(', ')
+      : musicPreferences,
+    hoursAvail,
+    equipmentAccess,
+    otherNotes || '',
+  ];
+
+  db.run(query, params, (err) => {
+    if (err) {
+      console.error('Onboard Submission Error:', err.message);
+      return res.status(500).json({ error: 'Database insert failed' });
+    }
+
+    res.status(200).json({ message: 'Onboarding form submitted successfully' });
+  });
+});
+
 
 
 export default router;
