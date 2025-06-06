@@ -430,7 +430,6 @@ async function updateOnboardedMetafield(session, customerId, value = true) {
   return response.body.data.customerUpdate.customer;
 }
 
-
 // Middleware to verify shopify requests
 function verifyProxyRequest(req, res, next) {
   const query = { ...req.query }

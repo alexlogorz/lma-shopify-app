@@ -10,6 +10,9 @@ import productCreator from "./product-creator.js";
 import PrivacyWebhookHandlers from "./privacy.js";
 import bodyParser from "body-parser";
 import { verifyProxyRequest } from "./utils.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",

@@ -3,3 +3,7 @@
 .studentsTable thead th {
     font-weight: bold;
 }
+
+.studentsTable a {
+    color: rgb(190, 21, 21);
+}

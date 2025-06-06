@@ -23,7 +23,7 @@ export default function StudentTable() {
   if (loading) return <Spinner accessibilityLabel="Loading" size="large" />;
 
   const rows = customers.map((customer) => [
-    <Link to={`/students/${customer.id.split('/').pop()}`}>{customer.name}</Link>,
+    <Link to={`/students/${customer.id.split('/').pop()}`}>{customer?.name || 'N/A'}</Link>,
     customer.email,
     customer.onboarded ? "✅" : "❌"
   ]);
