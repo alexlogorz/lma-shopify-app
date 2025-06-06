@@ -5,7 +5,8 @@ import {
   getCourseByHandle, 
   getRegisteredCourses,
   getCompletedLessons,
-  insertOnboardingSubmission
+  insertOnboardingSubmission,
+  updateOnboardedMetafield
 } from '../utils.js';
 import sqlite3 from 'sqlite3';
 
@@ -79,14 +80,24 @@ router.get('/:id', async (req, res) => {
 
 router.post('/submit-onboarding', async (req, res) => {
   try {
+    const session = res.locals.shopify?.session;
+    const { customerId } = req.body;
+
+    if (!session || !customerId) {
+      return res.status(400).json({ error: 'Missing session or customerId' });
+    }
+
     await insertOnboardingSubmission(db, req.body);
-    res.status(200).json({ message: 'Onboarding form submitted successfully' });
+    await updateOnboardedMetafield(session, customerId, true);
+
+    res.status(200).json({ message: 'Onboarding form submitted and customer marked as onboarded' });
   } 
   catch (err) {
     console.error('Onboard Submission Error:', err.message);
-    res.status(500).json({ error: 'Database insert failed' });
+    res.status(500).json({ error: 'Failed to submit onboarding or update metafield' });
   }
 });
+
 
 
 

@@ -385,6 +385,52 @@ function insertOnboardingSubmission(db, formData) {
   });
 }
 
+async function updateOnboardedMetafield(session, customerId, value = true) {
+  const client = new shopify.api.clients.Graphql({ session });
+
+  const mutation = `
+    mutation UpdateCustomerMetafield($input: CustomerInput!) {
+      customerUpdate(input: $input) {
+        customer {
+          id
+          metafield(namespace: "custom", key: "onboarding_completed") {
+            value
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const variables = {
+    input: {
+      id: `gid://shopify/Customer/${customerId}`,
+      metafields: [
+        {
+          namespace: "custom",
+          key: "onboarding_completed",
+          type: "boolean",
+          value: value ? "true" : "false",
+        },
+      ],
+    },
+  };
+
+  const response = await client.query({ data: { query: mutation, variables } });
+
+  const errors = response.body.data.customerUpdate.userErrors;
+  if (errors.length > 0) {
+    console.error("Metafield update errors:", errors);
+    throw new Error("Failed to update onboarded metafield");
+  }
+
+  return response.body.data.customerUpdate.customer;
+}
+
+
 // Middleware to verify shopify requests
 function verifyProxyRequest(req, res, next) {
   const query = { ...req.query }
@@ -418,6 +464,7 @@ export {
   getRegisteredCourses, 
   getCompletedLessons,
   insertOnboardingSubmission,
-  verifyProxyRequest
+  verifyProxyRequest,
+  updateOnboardedMetafield
 };
   
