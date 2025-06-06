@@ -393,7 +393,7 @@ async function updateOnboardedMetafield(session, customerId, value = true) {
       customerUpdate(input: $input) {
         customer {
           id
-          metafield(namespace: "custom", key: "onboarding_completed") {
+          metafield(namespace: "custom", key: "completed_onboarding") {
             value
           }
         }
@@ -411,7 +411,7 @@ async function updateOnboardedMetafield(session, customerId, value = true) {
       metafields: [
         {
           namespace: "custom",
-          key: "onboarding_completed",
+          key: "completed_onboarding",
           type: "boolean",
           value: value ? "true" : "false",
         },
