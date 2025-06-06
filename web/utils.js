@@ -34,7 +34,7 @@ async function getCustomersWithMetafields(session) {
 
     const customers = response.body.data.customers.edges.map(({ node }) => {
       const onboardedMeta = node.metafields.edges.find(
-        ({ node }) => node.namespace === "custom" && node.key === "onboarded"
+        ({ node }) => node.namespace === "custom" && node.key === "completed_onboarding"
       );
 
       const onboarded = onboardedMeta?.node.value === "true";
@@ -88,7 +88,7 @@ async function getStudentById(session, customerId) {
       if (!customer) return null;
   
       const onboardedMeta = customer.metafields.edges.find(
-        ({ node }) => node.namespace === "custom" && node.key === "onboarded"
+        ({ node }) => node.namespace === "custom" && node.key === "completed_onboarding"
       );
   
       return {
@@ -334,7 +334,7 @@ function insertOnboardingSubmission(db, formData) {
     musicPreferences,
     hoursAvail,
     equipmentAccess,
-    otherNotes,
+    otherNotes
   } = formData;
 
   const query = `
@@ -353,8 +353,9 @@ function insertOnboardingSubmission(db, formData) {
       music_preferences,
       weekly_hours_available,
       equipment_access,
-      additional_notes
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      additional_notes,
+      created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const params = [
@@ -375,6 +376,7 @@ function insertOnboardingSubmission(db, formData) {
     hoursAvail,
     equipmentAccess,
     otherNotes || '',
+    new Date().toISOString().split('T')[0]
   ];
 
   return new Promise((resolve, reject) => {
