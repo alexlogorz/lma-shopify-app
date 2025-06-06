@@ -1,5 +1,6 @@
 // utils.js
 import shopify from './shopify.js';
+import crypto from 'crypto';
 
 async function getCustomersWithMetafields(session) {
   const client = new shopify.api.clients.Graphql({ session });
@@ -317,12 +318,106 @@ async function getCompletedLessons(session, customerId) {
   return lessons;
 }
 
+function insertOnboardingSubmission(db, formData) {
+  const {
+    customerId,
+    firstName,
+    lastName,
+    email,
+    phone,
+    studentLoc,
+    prefStartDate,
+    prefInstructor,
+    lessonPackage,
+    goals,
+    expLevel,
+    musicPreferences,
+    hoursAvail,
+    equipmentAccess,
+    otherNotes,
+  } = formData;
+
+  const query = `
+    INSERT INTO onboarding_submissions (
+      customer_id,
+      first_name,
+      last_name,
+      email,
+      phone,
+      location,
+      preferred_start_date,
+      preferred_instructor,
+      lesson_package,
+      goals,
+      experience_level,
+      music_preferences,
+      weekly_hours_available,
+      equipment_access,
+      additional_notes
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const params = [
+    customerId,
+    firstName,
+    lastName,
+    email,
+    phone,
+    studentLoc,
+    prefStartDate,
+    prefInstructor,
+    lessonPackage,
+    goals,
+    expLevel,
+    Array.isArray(musicPreferences)
+      ? musicPreferences.join(', ')
+      : musicPreferences,
+    hoursAvail,
+    equipmentAccess,
+    otherNotes || '',
+  ];
+
+  return new Promise((resolve, reject) => {
+    db.run(query, params, (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
+// Middleware to verify shopify requests
+function verifyProxyRequest(req, res, next) {
+  const query = { ...req.query }
+  const signature = query.signature
+
+  if (!signature) {
+    return res.status(403).json({
+      error: "Missing signature"
+    })
+  }
+
+  delete query.signature
+
+  const sortedParams = Object.keys(query).sort().map(key => `${key}=${query[key]}`).join('');
+  const calculatedSignature = crypto.createHmac('sha256', process.env.SHOPIFY_API_SECRET).update(sortedParams).digest('hex');
+
+  // Compare signatures securely
+  if (!crypto.timingSafeEqual(Buffer.from(calculatedSignature, "utf8"), Buffer.from(signature, "utf8"))) {
+    return res.status(403).send("Invalid signature");
+  }
+
+  // Proceed
+  next()
+}
+
 export { 
   getCustomersWithMetafields, 
   getStudentById, 
   getCourses, 
   getCourseByHandle, 
   getRegisteredCourses, 
-  getCompletedLessons 
+  getCompletedLessons,
+  insertOnboardingSubmission,
+  verifyProxyRequest
 };
   

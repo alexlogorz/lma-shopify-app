@@ -8,6 +8,8 @@ import courseRoutes from "./routes/courses.js";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import PrivacyWebhookHandlers from "./privacy.js";
+import bodyParser from "body-parser";
+import { verifyProxyRequest } from "./utils.js";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -36,12 +38,23 @@ app.post(
 // If you are adding routes outside of the /api path, remember to
 // also add a proxy rule for them in web/frontend/vite.config.js
 
+// Requests coming from the shopify admin
 app.use("/api/*", shopify.validateAuthenticatedSession());
+
+// Requests coming from the app proxy.
+app.use("/proxy/*", verifyProxyRequest);
 
 app.use(express.json());
 
-app.use("/api/students", studentRoutes);
-app.use("/api/courses", courseRoutes)
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Routers
+app.use("/api/students", studentRoutes); 
+app.use("/api/courses", courseRoutes);
+
+// Proxy routes
+app.use("/proxy/students", studentRoutes);
+
 
 app.get("/api/products/count", async (_req, res) => {
   const client = new shopify.api.clients.Graphql({
