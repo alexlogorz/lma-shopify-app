@@ -11,8 +11,14 @@ import PrivacyWebhookHandlers from "./privacy.js";
 import bodyParser from "body-parser";
 import { verifyProxyRequest } from "./utils.js";
 import dotenv from 'dotenv';
+import cors from "cors";
+import fs from "fs";
+import https from "https";
 
 dotenv.config();
+
+const allowedOrigins = ["https://latinmixacademy.com"];
+const isProduction = process.env.NODE_ENV === "production";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -25,6 +31,28 @@ const STATIC_PATH =
     : `${process.cwd()}/frontend/`;
 
 const app = express();
+
+let server;
+
+if (isProduction) {
+    // Load SSL certificate and private key
+    const options = {
+        key: fs.readFileSync(`${process.env.SSL_KEY_PATH}`),
+        cert: fs.readFileSync(`${process.env.SSL_CERT_PATH}`),
+    };
+
+    server = https.createServer(options, app);
+} 
+else {
+    server = app;
+}
+
+// CORS
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
+
 
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
@@ -103,4 +131,4 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
     );
 });
 
-app.listen(PORT);
+server.listen(PORT);
