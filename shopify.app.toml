@@ -3,7 +3,7 @@
 client_id = "95f65414afba53560b17b2d603264959"
 name = "lma-private-app"
 handle = "lma-private-app"
-application_url = "https://3036-2603-9000-f9f0-8f50-a4e9-5597-245a-ce92.ngrok-free.app"
+application_url = "https://551d-2603-9000-f9f0-8f50-c2a-af85-6d37-bea4.ngrok-free.app"
 embedded = true
 
 [build]
@@ -17,15 +17,15 @@ scopes = "read_customers,read_metaobjects,read_products,write_customers,write_me
 
 [auth]
 redirect_urls = [
-  "https://3036-2603-9000-f9f0-8f50-a4e9-5597-245a-ce92.ngrok-free.app/auth/callback",
-  "https://3036-2603-9000-f9f0-8f50-a4e9-5597-245a-ce92.ngrok-free.app/auth/shopify/callback",
-  "https://3036-2603-9000-f9f0-8f50-a4e9-5597-245a-ce92.ngrok-free.app/api/auth/callback"
+  "https://551d-2603-9000-f9f0-8f50-c2a-af85-6d37-bea4.ngrok-free.app/auth/callback",
+  "https://551d-2603-9000-f9f0-8f50-c2a-af85-6d37-bea4.ngrok-free.app/auth/shopify/callback",
+  "https://551d-2603-9000-f9f0-8f50-c2a-af85-6d37-bea4.ngrok-free.app/api/auth/callback"
 ]
 
 [app_proxy]
 subpath = "lma"
 prefix = "apps"
-url = "https://3036-2603-9000-f9f0-8f50-a4e9-5597-245a-ce92.ngrok-free.app/proxy"
+url = "https://551d-2603-9000-f9f0-8f50-c2a-af85-6d37-bea4.ngrok-free.app/proxy"
 
 [webhooks]
 api_version = "2025-04"
