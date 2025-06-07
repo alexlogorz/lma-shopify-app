@@ -27,7 +27,7 @@ const PORT = parseInt(
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
-    ? `${process.cwd()}/frontend/dist`
+    ? `${process.cwd()}/lma-shopify-app/web/frontend/dist`
     : `${process.cwd()}/frontend/`;
 
 const app = express();
@@ -46,6 +46,8 @@ if (isProduction) {
 else {
     server = app;
 }
+
+console.log(isProduction)
 
 // CORS
 app.use(cors({

@@ -28,7 +28,7 @@ prefix = "apps"
 url = "https://app.latinmixacademy.com/proxy"
 
 [webhooks]
-api_version = "2025-04"
+api_version = "2024-10"
 
 [pos]
 embedded = false
