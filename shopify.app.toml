@@ -17,8 +17,6 @@ scopes = "read_customers,read_metaobjects,read_products,write_customers,write_me
 
 [auth]
 redirect_urls = [
-  "https://app.latinmixacademy.com/auth/callback",
-  "https://app.latinmixacademy.com/auth/shopify/callback",
   "https://app.latinmixacademy.com/api/auth/callback"
 ]
 
