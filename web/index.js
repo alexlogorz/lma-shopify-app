@@ -17,7 +17,7 @@ import https from "https";
 
 dotenv.config();
 
-const allowedOrigins = ["https://latinmixacademy.com"];
+const allowedOrigins = ["https://latinmixacademy.com", "https://alexs-store-43123.myshopify.com"];
 const isProduction = process.env.NODE_ENV === "production";
 
 const PORT = parseInt(
@@ -46,8 +46,6 @@ if (isProduction) {
 else {
     server = app;
 }
-
-console.log(isProduction)
 
 // CORS
 app.use(cors({
