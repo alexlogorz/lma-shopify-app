@@ -10,8 +10,11 @@ import {
 } from '../utils.js';
 import sqlite3 from 'sqlite3';
 import { SQLiteSessionStorage } from '@shopify/shopify-app-session-storage-sqlite';
+import dotenv from 'dotenv'
 
-const DB_PATH = `${process.cwd()}/database.sqlite`;
+dotenv.config()
+
+const DB_PATH = `${process.env.SQLITE_DB_PATH}`;
 const sessionStorage = new SQLiteSessionStorage(DB_PATH);
 const db = new sqlite3.Database(DB_PATH);
 
