@@ -6,7 +6,7 @@ import {
   getRegisteredCourses,
   getCompletedLessons,
   insertOnboardingSubmission,
-  updateOnboardedMetafield
+  updateOnboardedMetafield,
 } from '../utils.js';
 import sqlite3 from 'sqlite3';
 import { SQLiteSessionStorage } from '@shopify/shopify-app-session-storage-sqlite';
@@ -70,7 +70,7 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const student = await getStudentById(session, id);
+    const student = await getStudentById(session, id, db);
 
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
@@ -91,7 +91,7 @@ router.post('/submit-onboarding', async (req, res) => {
     if (!customerId) {
       return res.status(400).json({ error: 'Missing customerId or shop' });
     }
-    console.log(`offline_${process.env.SHOPIFY_SHOP_NAME}`)
+
     // Load offline session from your SQLite session storage
     const session = await sessionStorage.loadSession(`offline_${process.env.SHOPIFY_SHOP_NAME}`);
     
@@ -109,8 +109,6 @@ router.post('/submit-onboarding', async (req, res) => {
     res.status(500).json({ error: 'Failed to submit onboarding or update metafield' });
   }
 });
-
-
 
 
 

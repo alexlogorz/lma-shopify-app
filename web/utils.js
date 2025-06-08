@@ -54,55 +54,70 @@ async function getCustomersWithMetafields(session) {
   }
 }
 
-async function getStudentById(session, customerId) {
-    const client = new shopify.api.clients.Graphql({ session });
-  
-    const query = `
-      query getCustomer($id: ID!) {
-        customer(id: $id) {
-          id
-          firstName
-          lastName
-          email
-          metafields(first: 10, namespace: "custom") {
-            edges {
-              node {
-                key
-                value
-                namespace
-              }
+async function getStudentById(session, customerId, db) {
+  const client = new shopify.api.clients.Graphql({ session });
+
+  const query = `
+    query getCustomer($id: ID!) {
+      customer(id: $id) {
+        id
+        firstName
+        lastName
+        email
+        metafields(first: 10, namespace: "custom") {
+          edges {
+            node {
+              key
+              value
+              namespace
             }
           }
         }
       }
-    `;
-  
-    const variables = {
-      id: `gid://shopify/Customer/${customerId}`,
-    };
-  
-    try {
-      const response = await client.query({ data: { query, variables } });
-      const customer = response.body.data.customer;
-  
-      if (!customer) return null;
-  
-      const onboardedMeta = customer.metafields.edges.find(
-        ({ node }) => node.namespace === "custom" && node.key === "completed_onboarding"
-      );
-  
-      return {
-        id: customer.id,
-        name: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
-        email: customer.email,
-        onboarded: onboardedMeta?.node.value === "true",
-      };
-    } 
-    catch (error) {
-      console.error("GraphQL error:", error);
-      throw error;
     }
+  `;
+
+  const variables = {
+    id: `gid://shopify/Customer/${customerId}`,
+  };
+
+  try {
+    const response = await client.query({ data: { query, variables } });
+    const customer = response.body.data.customer;
+
+    if (!customer) return null;
+
+    const onboardedMeta = customer.metafields.edges.find(
+      ({ node }) => node.namespace === "custom" && node.key === "completed_onboarding"
+    );
+
+    const submission = await new Promise((resolve, reject) => {
+      db.get(
+        `SELECT * FROM onboarding_submissions WHERE customer_id = ? LIMIT 1`,
+        [customerId],
+        (err, row) => {
+          if (err) return reject(err);
+          resolve(row || null);
+        }
+      );
+    });
+
+    return {
+      id: customer.id,
+      name: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      email: customer.email,
+      onboarded: onboardedMeta?.node.value === "true",
+      onboardingSubmission: submission,
+    };
+  } catch (error) {
+    console.error("GraphQL or DB error:", error);
+    throw error;
+  }
 }
+
+export default getStudentById;
+
+
 
 async function getCourses(session) {
     const client = new shopify.api.clients.Graphql({ session });
@@ -466,6 +481,6 @@ export {
   getCompletedLessons,
   insertOnboardingSubmission,
   verifyProxyRequest,
-  updateOnboardedMetafield
+  updateOnboardedMetafield,
 };
   

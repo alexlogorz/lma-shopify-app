@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "95f65414afba53560b17b2d603264959"
-name = "Latin Mix Academy"
-handle = "lma-private-app"
-application_url = "https://app.latinmixacademy.com"
+client_id = "e5b15939c7e71977b6dd507b68379589"
+name = "Latin Mix Academy Dev"
+handle = "lma-private-app-dev"
+application_url = "https://a7c8-2603-9000-f9f0-8f50-6487-417b-23ce-8a79.ngrok-free.app/"
 embedded = true
 
 [build]
@@ -16,12 +16,14 @@ dev_store_url = "alexs-store-43123.myshopify.com"
 scopes = "read_customers,read_metaobjects,read_products,write_customers,write_metaobjects,write_products"
 
 [auth]
-redirect_urls = [ "https://app.latinmixacademy.com/api/auth/callback" ]
+redirect_urls = [
+  "https://a7c8-2603-9000-f9f0-8f50-6487-417b-23ce-8a79.ngrok-free.app/api/auth/callback",
+]
 
 [app_proxy]
 subpath = "lma"
 prefix = "apps"
-url = "https://app.latinmixacademy.com/proxy"
+url = "https://a7c8-2603-9000-f9f0-8f50-6487-417b-23ce-8a79.ngrok-free.app/proxy"
 
 [webhooks]
 api_version = "2024-10"
