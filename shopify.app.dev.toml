@@ -3,11 +3,11 @@
 client_id = "e5b15939c7e71977b6dd507b68379589"
 name = "Latin Mix Academy Dev"
 handle = "lma-private-app-dev"
-application_url = "https://a7c8-2603-9000-f9f0-8f50-6487-417b-23ce-8a79.ngrok-free.app/"
+application_url = "https://955f-2603-9000-f9f0-8f50-c89c-9cc2-2b30-da3.ngrok-free.app"
 embedded = true
 
 [build]
-automatically_update_urls_on_dev = false
+automatically_update_urls_on_dev = true
 include_config_on_deploy = true
 dev_store_url = "alexs-store-43123.myshopify.com"
 
@@ -17,13 +17,15 @@ scopes = "read_customers,read_metaobjects,read_products,write_customers,write_me
 
 [auth]
 redirect_urls = [
-  "https://a7c8-2603-9000-f9f0-8f50-6487-417b-23ce-8a79.ngrok-free.app/api/auth/callback",
+  "https://955f-2603-9000-f9f0-8f50-c89c-9cc2-2b30-da3.ngrok-free.app/auth/callback",
+  "https://955f-2603-9000-f9f0-8f50-c89c-9cc2-2b30-da3.ngrok-free.app/auth/shopify/callback",
+  "https://955f-2603-9000-f9f0-8f50-c89c-9cc2-2b30-da3.ngrok-free.app/api/auth/callback"
 ]
 
 [app_proxy]
 subpath = "lma"
 prefix = "apps"
-url = "https://a7c8-2603-9000-f9f0-8f50-6487-417b-23ce-8a79.ngrok-free.app/proxy"
+url = "https://955f-2603-9000-f9f0-8f50-c89c-9cc2-2b30-da3.ngrok-free.app/proxy"
 
 [webhooks]
 api_version = "2024-10"

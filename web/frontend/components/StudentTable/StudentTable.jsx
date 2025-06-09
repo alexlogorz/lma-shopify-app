@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DataTable, Spinner } from "@shopify/polaris";
+import { DataTable, Spinner, Box } from "@shopify/polaris";
 import { Link } from "react-router-dom";
 import styles from './StudentTable.module.css';
 
@@ -29,12 +29,12 @@ export default function StudentTable() {
   ]);
 
   return (
-    <div className={styles.studentsTable}>
+    <Box paddingBlockEnd={4}>
       <DataTable
         columnContentTypes={["text", "text", "text"]}
         headings={["Name", "Email", "Onboarded"]}
         rows={rows}
       />
-    </div>
+    </Box>
   );
 }
