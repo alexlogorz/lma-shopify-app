@@ -343,13 +343,9 @@ function insertOnboardingSubmission(db, formData) {
     studentLoc,
     prefStartDate,
     prefInstructor,
-    lessonPackage,
     goals,
     expLevel,
-    musicPreferences,
     hoursAvail,
-    equipmentAccess,
-    otherNotes
   } = formData;
 
   const query = `
@@ -362,15 +358,11 @@ function insertOnboardingSubmission(db, formData) {
       location,
       preferred_start_date,
       preferred_instructor,
-      lesson_package,
       goals,
       experience_level,
-      music_preferences,
       weekly_hours_available,
-      equipment_access,
-      additional_notes,
       created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const params = [
@@ -382,15 +374,9 @@ function insertOnboardingSubmission(db, formData) {
     studentLoc,
     prefStartDate,
     prefInstructor,
-    lessonPackage,
     goals,
     expLevel,
-    Array.isArray(musicPreferences)
-      ? musicPreferences.join(', ')
-      : musicPreferences,
     hoursAvail,
-    equipmentAccess,
-    otherNotes || '',
     new Date().toISOString().split('T')[0]
   ];
 
